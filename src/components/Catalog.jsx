@@ -18,9 +18,7 @@ const Catalog = () => {
           })
         );
         setSeriesData(results);
-      } catch (err) {
-        console.error("Error cargando API:", err);
-      }
+      } catch (err) { console.error(err); }
     };
     fetchAll();
   }, []);
@@ -29,29 +27,16 @@ const Catalog = () => {
 
   return (
     <div style={{ padding: '40px 4%' }}>
-      <h2 style={{ fontSize: '1.8rem', marginBottom: '25px', fontWeight: 'bold' }}>Series para ti</h2>
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', 
-        gap: '20px' 
-      }}>
+      <h2 style={{ fontSize: '1.8rem', marginBottom: '25px' }}>Series para ti</h2>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
         {seriesData.map((serie) => (
-          <div 
-            key={serie.id} 
-            onClick={() => navigate(`/series/${serie.id}`)}
-            style={{ cursor: 'pointer', borderRadius: '8px', overflow: 'hidden', background: '#1a242f' }}
-          >
-            <img 
-              src={`https://image.tmdb.org/t/p/w500${serie.backdrop_path}`} 
-              alt={serie.name} 
-              style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover' }}
-            />
-            <p style={{ padding: '12px', margin: 0, fontSize: '0.9rem', fontWeight: 'bold' }}>{serie.name}</p>
+          <div key={serie.id} onClick={() => navigate(`/series/${serie.id}`)} style={{ cursor: 'pointer', borderRadius: '8px', overflow: 'hidden', background: '#1a242f' }}>
+            <img src={`https://image.tmdb.org/t/p/w500${serie.backdrop_path}`} alt={serie.name} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover' }} />
+            <p style={{ padding: '12px', margin: 0, fontWeight: 'bold' }}>{serie.name}</p>
           </div>
         ))}
       </div>
     </div>
   );
 };
-
 export default Catalog;
