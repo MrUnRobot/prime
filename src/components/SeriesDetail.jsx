@@ -7,6 +7,7 @@ const SeriesDetail = () => {
   const navigate = useNavigate();
   const [serie, setSerie] = useState(null);
   const [tmdb, setTmdb] = useState(null);
+  const [temporadaSel, setTemporadaSel] = useState("4");
 
   useEffect(() => {
     const found = mySeries.find(s => String(s.id) === String(id));
@@ -18,55 +19,74 @@ const SeriesDetail = () => {
     }
   }, [id]);
 
-  if (!serie) return <div style={{padding: '50px', textAlign: 'center'}}><h2>Serie no encontrada</h2><button onClick={() => navigate('/')}>Volver</button></div>;
+  if (!serie || !tmdb) return <div style={{padding: '50px', textAlign: 'center', color: 'white'}}>Cargando...</div>;
+
+  const episodios = serie.capitulos[temporadaSel] || [];
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0f171e', color: 'white', padding: '40px 4%' }}>
-      <button onClick={() => navigate('/')} style={{ background: 'none', color: '#00a8e1', border: 'none', cursor: 'pointer', marginBottom: '20px', fontSize: '1rem' }}>
-        ← Volver al catálogo
-      </button>
-
-      <div style={{ marginBottom: '40px' }}>
-        <h1 style={{ fontSize: '3rem', margin: '0 0 10px 0' }}>{tmdb?.name || "Invencible"}</h1>
-        <p style={{ color: '#00a8e1', fontWeight: 'bold', fontSize: '1.2rem' }}>Temporada {serie.temporada}</p>
-        <p style={{ maxWidth: '800px', color: '#8197a4', lineHeight: '1.6', fontSize: '1.1rem' }}>{tmdb?.overview}</p>
-      </div>
-      
-      <h2 style={{ borderBottom: '1px solid #252e39', paddingBottom: '10px', marginBottom: '20px' }}>Episodios</h2>
-      
-      <div style={{ display: 'grid', gap: '15px' }}>
-        {serie.capitulos.map((cap, index) => (
-          <div key={index} style={{ 
-            background: '#1a242f', 
-            padding: '20px', 
-            borderRadius: '8px', 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            border: '1px solid #252e39' 
-          }}>
-            <div>
-              <h3 style={{ margin: 0 }}>{index + 1}. {cap.titulo}</h3>
-              <span style={{ color: '#8197a4', fontSize: '0.9rem' }}>Google Photos Video</span>
-            </div>
-            <a 
-              href={cap.url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={{ 
-                backgroundColor: '#00a8e1', 
-                color: 'white', 
-                padding: '10px 25px', 
-                borderRadius: '4px', 
-                textDecoration: 'none', 
-                fontWeight: 'bold',
-                fontSize: '0.9rem'
-              }}
-            >
-              REPRODUCIR
-            </a>
+    <div style={{ minHeight: '100vh', backgroundColor: '#0f171e', color: 'white' }}>
+      {/* Hero Section con Backdrop */}
+      <div style={{ 
+        height: '60vh', position: 'relative', 
+        backgroundImage: `linear-gradient(to right, #0f171e 20%, transparent 100%), url(https://image.tmdb.org/t/p/original${tmdb.backdrop_path})`,
+        backgroundSize: 'cover', backgroundPosition: 'center center'
+      }}>
+        <div style={{ padding: '60px 4%', position: 'absolute', bottom: '20px', maxWidth: '800px' }}>
+          <button onClick={() => navigate('/')} style={{ background: 'none', color: '#00a8e1', border: 'none', cursor: 'pointer', marginBottom: '20px' }}>← Volver</button>
+          <h1 style={{ fontSize: '3.5rem', marginBottom: '10px' }}>{tmdb.name}</h1>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+            <span style={{ color: '#00a8e1', fontWeight: 'bold' }}>Rating: {tmdb.vote_average?.toFixed(1)} ★</span>
+            <span style={{ border: '1px solid #8197a4', padding: '0 8px', borderRadius: '4px', color: '#8197a4' }}>18+</span>
+            <span>{tmdb.first_air_date?.split('-')[0]}</span>
           </div>
-        ))}
+
+          <p style={{ fontSize: '1.1rem', lineHeight: '1.6', color: '#ccc', marginBottom: '30px' }}>{tmdb.overview}</p>
+          
+          {/* Selector de Temporada Estilizado */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <span style={{ fontWeight: 'bold' }}>Temporada:</span>
+            <select 
+              value={temporadaSel} 
+              onChange={(e) => setTemporadaSel(e.target.value)}
+              style={{ background: '#1a242f', color: 'white', border: '1px solid #333', padding: '8px 15px', borderRadius: '4px' }}
+            >
+              {serie.temporadasDisponibles.map(t => <option key={t} value={t}>Temporada {t}</option>)}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Lista de Episodios con Miniaturas */}
+      <div style={{ padding: '40px 4%' }}>
+        <h2 style={{ marginBottom: '25px', fontSize: '1.5rem' }}>Episodios</h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {episodios.map((cap, index) => (
+            <div key={index} style={{ 
+              display: 'flex', gap: '20px', background: '#1b2530', padding: '15px', 
+              borderRadius: '8px', border: '1px solid #252e39', alignItems: 'center' 
+            }}>
+              <div style={{ position: 'relative', width: '220px', flexShrink: 0 }}>
+                <img 
+                  src={`https://image.tmdb.org/t/p/w300${tmdb.backdrop_path}`} 
+                  alt={cap.titulo} 
+                  style={{ width: '100%', borderRadius: '4px', opacity: '0.7' }}
+                />
+                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontSize: '2rem' }}>▶</div>
+              </div>
+              <div style={{ flexGrow: 1 }}>
+                <h3 style={{ margin: '0 0 8px 0' }}>{index + 1}. {cap.titulo}</h3>
+                <p style={{ margin: '0 0 15px 0', color: '#8197a4', fontSize: '0.95rem' }}>{cap.sinopsis}</p>
+                <a 
+                  href={cap.url} target="_blank" rel="noopener noreferrer"
+                  style={{ backgroundColor: '#00a8e1', color: 'white', padding: '8px 20px', borderRadius: '4px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.85rem', display: 'inline-block' }}
+                >
+                  REPRODUCIR
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
