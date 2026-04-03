@@ -9,7 +9,6 @@ const SeriesDetail = () => {
   const [tmdb, setTmdb] = useState(null);
 
   useEffect(() => {
-    // Buscamos por el ID que ahora es 95557
     const found = mySeries.find(s => String(s.id) === String(id));
     if (found) {
       setSerie(found);
@@ -19,22 +18,53 @@ const SeriesDetail = () => {
     }
   }, [id]);
 
-  if (!serie) return <div style={{padding: '50px', textAlign: 'center'}}><h2>Serie no encontrada (ID: {id})</h2><button onClick={() => navigate('/')}>Volver</button></div>;
+  if (!serie) return <div style={{padding: '50px', textAlign: 'center'}}><h2>Serie no encontrada</h2><button onClick={() => navigate('/')}>Volver</button></div>;
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0f171e', color: 'white', padding: '40px 4%' }}>
-      <button onClick={() => navigate('/')} style={{ background: 'none', color: '#00a8e1', border: 'none', cursor: 'pointer', marginBottom: '20px' }}>← Volver</button>
-      <h1 style={{ fontSize: '2.5rem' }}>{tmdb?.name || "Cargando..."}</h1>
-      <p style={{ color: '#00a8e1' }}>Temporada {serie.temporada}</p>
-      <p style={{ maxWidth: '800px', color: '#8197a4', marginBottom: '30px' }}>{tmdb?.overview}</p>
+      <button onClick={() => navigate('/')} style={{ background: 'none', color: '#00a8e1', border: 'none', cursor: 'pointer', marginBottom: '20px', fontSize: '1rem' }}>
+        ← Volver al catálogo
+      </button>
+
+      <div style={{ marginBottom: '40px' }}>
+        <h1 style={{ fontSize: '3rem', margin: '0 0 10px 0' }}>{tmdb?.name || "Invencible"}</h1>
+        <p style={{ color: '#00a8e1', fontWeight: 'bold', fontSize: '1.2rem' }}>Temporada {serie.temporada}</p>
+        <p style={{ maxWidth: '800px', color: '#8197a4', lineHeight: '1.6', fontSize: '1.1rem' }}>{tmdb?.overview}</p>
+      </div>
       
-      <div style={{ display: 'grid', gap: '20px' }}>
+      <h2 style={{ borderBottom: '1px solid #252e39', paddingBottom: '10px', marginBottom: '20px' }}>Episodios</h2>
+      
+      <div style={{ display: 'grid', gap: '15px' }}>
         {serie.capitulos.map((cap, index) => (
-          <div key={index} style={{ background: '#1a242f', padding: '20px', borderRadius: '8px', border: '1px solid #252e39' }}>
-            <h3>{index + 1}. {cap.titulo}</h3>
-            <video controls width="100%" style={{ marginTop: '10px', borderRadius: '4px' }}>
-              <source src={cap.videoUrl} type="video/mp4" />
-            </video>
+          <div key={index} style={{ 
+            background: '#1a242f', 
+            padding: '20px', 
+            borderRadius: '8px', 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            border: '1px solid #252e39' 
+          }}>
+            <div>
+              <h3 style={{ margin: 0 }}>{index + 1}. {cap.titulo}</h3>
+              <span style={{ color: '#8197a4', fontSize: '0.9rem' }}>Google Photos Video</span>
+            </div>
+            <a 
+              href={cap.url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ 
+                backgroundColor: '#00a8e1', 
+                color: 'white', 
+                padding: '10px 25px', 
+                borderRadius: '4px', 
+                textDecoration: 'none', 
+                fontWeight: 'bold',
+                fontSize: '0.9rem'
+              }}
+            >
+              REPRODUCIR
+            </a>
           </div>
         ))}
       </div>
