@@ -1,14 +1,13 @@
 export const mySeries = [
   {
-    id: 1,
+    id: "95557",
     tmdbId: "95557",
-    tituloManual: "Invencible",
-    temporada: 1,
+    temporada: 4,
     capitulos: [
-      { titulo: "Las cosas no son lo que parecen", videoUrl: "https://video-downloads.googleusercontent.com/AMRE_m3Y4J0L6z-Xn-p1Q6U9M7V5" },
-      { titulo: "Casi parece que eres real", videoUrl: "https://video-downloads.googleusercontent.com/AMRE_m2N8K1L5y-Zn-p2R7W0N8X6" },
-      { titulo: "A quién llamas feo", videoUrl: "https://video-downloads.googleusercontent.com/AMRE_m1P9J2M4x-An-p3S8Y1P9Y7" },
-      { titulo: "Neil Armstrong, come polvo", videoUrl: "https://video-downloads.googleusercontent.com/AMRE_m0Q8K3N3z-Bn-p4T9Z2Q0Z8" }
+      { titulo: "Episodio 1", videoUrl: "https://photos.google.com/share/AF1QipPVKUDmoOPRZTEYADXOXC_jv90nh_R9JbyqimZcBOpQtp_k0CcuuUFHjFypxoeQSw/photo/AF1QipOjG1aeozRH08w9fpsc-_VdSLRRXrO9EgSZXky3?key=VHA2SjR5XzhJVEtITFMzaTBMMkpVMlFSdmNqZEdn" },
+      { titulo: "Episodio 2", videoUrl: "https://photos.google.com/share/AF1QipPVKUDmoOPRZTEYADXOXC_jv90nh_R9JbyqimZcBOpQtp_k0CcuuUFHjFypxoeQSw/photo/AF1QipM216cR8RmNY9MDFcRfCaIUNWxnrPk13btIjSa7?key=VHA2SjR5XzhJVEtITFMzaTBMMkpVMlFSdmNqZEdn" },
+      { titulo: "Episodio 3", videoUrl: "https://photos.google.com/share/AF1QipPVKUDmoOPRZTEYADXOXC_jv90nh_R9JbyqimZcBOpQtp_k0CcuuUFHjFypxoeQSw/photo/AF1QipM64LegJzut_wX6sIkOm07VRK7eqSaNR1vkAPym?key=VHA2SjR5XzhJVEtITFMzaTBMMkpVMlFSdmNqZEdn" },
+      { titulo: "Episodio 4", videoUrl: "https://photos.google.com/share/AF1QipPVKUDmoOPRZTEYADXOXC_jv90nh_R9JbyqimZcBOpQtp_k0CcuuUFHjFypxoeQSw/photo/AF1QipNX0Bz5F0Y-_rtAQohgYUq6GoujfJjEWBAuTUxF?key=VHA2SjR5XzhJVEtITFMzaTBMMkpVMlFSdmNqZEdn" }
     ]
   }
 ];

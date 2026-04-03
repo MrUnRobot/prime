@@ -30,7 +30,7 @@ const Catalog = () => {
       <h2 style={{ fontSize: '1.8rem', marginBottom: '25px' }}>Series para ti</h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
         {seriesData.map((serie) => (
-          <div key={serie.id} onClick={() => navigate(`/series/${serie.id}`)} style={{ cursor: 'pointer', borderRadius: '8px', overflow: 'hidden', background: '#1a242f' }}>
+          <div key={serie.id} onClick={() => navigate(`/series/${serie.tmdbId}`)} style={{ cursor: 'pointer', borderRadius: '8px', overflow: 'hidden', background: '#1a242f' }}>
             <img src={`https://image.tmdb.org/t/p/w500${serie.backdrop_path}`} alt={serie.name} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover' }} />
             <p style={{ padding: '12px', margin: 0, fontWeight: 'bold' }}>{serie.name}</p>
           </div>
