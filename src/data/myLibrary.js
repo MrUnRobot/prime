@@ -1,7 +1,7 @@
 export const mySeries = [
   {
     id: 1,
-    tmdbId: "95557", // Invincible
+    tmdbId: "95557",
     temporada: 4, 
     capitulos: [
       { titulo: "Capítulo 1", videoUrl: "https://photos.google.com/share/AF1QipO-A5GHAwl2YJNZuEpy5cudoDVUrPk62boNeUKouyYw-GxjwopVz0CGI5n1owHCUQ/photo/AF1QipPe2QfkmNBfsfkjlAPDwY9DH86w07mq8OiWP8aj?key=cDFGY3NoWEhyd0xxeFlSem1NUEJnVjhzaUhPN1B3" },
