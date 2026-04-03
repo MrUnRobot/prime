@@ -10,7 +10,7 @@ const SeriesDetail = () => {
 
   useEffect(() => {
     // Buscamos asegurando que ambos sean tratados como números
-    const found = mySeries.find(s => Number(s.id) === Number(id));
+    const found = mySeries.find(s => String(s.id) === String(id));
     setSerie(found);
 
     if (found) {
