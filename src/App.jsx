@@ -1,65 +1,51 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
-import { mySeries } from './data/myLibrary.js';
-import PrimeRow from './components/PrimeRow';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import Catalog from './components/Catalog';
 import SeriesDetail from './components/SeriesDetail';
-import { motion } from 'framer-motion';
-
-const Catalog = () => (
-  <motion.div 
-    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-    style={{ padding: '0 4%' }}
-  >
-    <h1 style={{ fontSize: '1.8rem', marginBottom: '30px', fontWeight: '300' }}>Series para ti</h1>
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-      {mySeries.map((series) => (
-        <PrimeRow key={series.id} series={series} />
-      ))}
-    </div>
-  </motion.div>
-);
+import logo from './assets/logo.svg';
 
 function App() {
+  const navigate = useNavigate();
+
   return (
-    <Router>
-      <div style={{ 
-        backgroundColor: '#0f171e', minHeight: '100vh', color: 'white', 
-        fontFamily: 'Arial, sans-serif', overflowX: 'hidden' 
+    <div style={{ backgroundColor: '#0f171e', minHeight: '100vh', color: 'white', fontFamily: 'Arial, sans-serif' }}>
+      {/* Navbar con el nuevo nombre y logo corregido */}
+      <nav style={{ 
+        padding: '15px 4%', 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: '10px',
+        background: 'linear-gradient(to bottom, rgba(15,23,30,1) 0%, rgba(15,23,30,0) 100%)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100
       }}>
-        <nav style={{ 
-          height: '70px', background: '#0f171e', display: 'flex', alignItems: 'center', 
-          padding: '0 4%', position: 'fixed', width: '100%', zIndex: 100, top: 0,
-          borderBottom: '1px solid rgba(255,255,255,0.1)'
-        }}>
-          <Link to="/">
-            <img 
-              src="https://m.media-amazon.com/images/G/01/digital/video/web/logo-min-remake.svg" 
-              alt="Prime" style={{ height: '30px' }} 
-            />
-          </Link>
-          <div style={{ marginLeft: '40px', display: 'flex', gap: '20px', fontSize: '0.9rem', color: '#8197a4' }}>
-            <Link to="/" style={{ textDecoration: 'none', color: 'white' }}>Inicio</Link>
-            <span>Series</span>
-            <span>Películas</span>
-          </div>
-        </nav>
+        <img 
+          src={logo} 
+          alt="Prime G Logo" 
+          style={{ height: '35px', cursor: 'pointer' }} 
+          onClick={() => navigate('/')} 
+        />
+        <h1 
+          style={{ 
+            color: '#fff', 
+            margin: 0, 
+            fontSize: '1.5rem', 
+            fontWeight: 'bold', 
+            cursor: 'pointer',
+            letterSpacing: '1px'
+          }} 
+          onClick={() => navigate('/')}
+        >
+          Prime <span style={{ color: '#00a8e1' }}>G</span>
+        </h1>
+      </nav>
 
-        <main style={{ paddingTop: '110px' }}>
-          <Routes>
-            <Route path="/" element={<Catalog />} />
-            <Route path="/serie/:id" element={<SeriesDetail />} />
-          </Routes>
-        </main>
-
-        <style>{`
-          ::-webkit-scrollbar { width: 8px; }
-          ::-webkit-scrollbar-track { background: #0f171e; }
-          ::-webkit-scrollbar-thumb { background: #1a242f; border-radius: 10px; }
-          ::-webkit-scrollbar-thumb:hover { background: #00a8e1; }
-          * { scrollbar-color: #1a242f #0f171e; scrollbar-width: thin; }
-        `}</style>
-      </div>
-    </Router>
+      <Routes>
+        <Route path="/" element={<Catalog />} />
+        <Route path="/series/:id" element={<SeriesDetail />} />
+      </Routes>
+    </div>
   );
 }
 
