@@ -13,11 +13,14 @@ const SeriesDetail = () => {
   const API_KEY = "844dba0bfd8f3a4f3799f6130ef9e335";
 
   useEffect(() => {
+    // Buscamos si el ID actual existe en nuestra librería personalizada
     const found = mySeries.find(s => String(s.id) === String(id) || String(s.tmdbId) === String(id));
-    const isAvatar = id === "19995" || id === "76600";
+    setSerie(found || null);
+
+    // Verificamos si es Avatar o una película genérica (no está en mySeries como TV)
+    const isTV = found && found.type === "tv";
     
-    if (found && !isAvatar) {
-      setSerie(found);
+    if (isTV) {
       setIsMovie(false);
       fetch(`https://api.themoviedb.org/3/tv/${found.tmdbId}?api_key=${API_KEY}&language=es-ES`)
         .then(res => res.json())
@@ -40,7 +43,8 @@ const SeriesDetail = () => {
 
   if (!tmdb) return <div style={{padding: '100px', textAlign: 'center', color: 'white'}}>Cargando...</div>;
 
-  const movieUrl = "https://photos.google.com/search/ChdBZ3JlZ2Fkb3MgcmVjaWVudGVtZW50ZSIIEgYKBHICCgAo3pTP19Uz/photo/AF1QipOz_RHrWy_TmsHwQfqFgTA7__1GlTmpJWRYHhFL";
+  // LÓGICA CLAVE: Solo usa el link si existe en myLibrary.js para este ID específico
+  const currentMovieUrl = isMovie ? serie?.url : null;
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0f171e', color: 'white', overflowX: 'hidden' }}>
@@ -57,11 +61,16 @@ const SeriesDetail = () => {
              <span>{isMovie ? `${tmdb.runtime} min` : `${tmdb.number_of_seasons} Temporadas`}</span>
           </div>
           <p className="description" style={{ lineHeight: '1.4', color: '#ccc', marginBottom: '25px', maxWidth: '700px' }}>{tmdb.overview}</p>
+          
           {isMovie ? (
-            <a href={movieUrl} target="_blank" rel="noreferrer" style={{ background: '#00a8e1', color: 'white', padding: '12px 25px', borderRadius: '4px', textDecoration: 'none', fontWeight: 'bold' }}>Reproducir Película</a>
+            currentMovieUrl ? (
+              <a href={currentMovieUrl} target="_blank" rel="noreferrer" style={{ background: '#00a8e1', color: 'white', padding: '12px 25px', borderRadius: '4px', textDecoration: 'none', fontWeight: 'bold' }}>Reproducir Película</a>
+            ) : (
+              <button disabled style={{ background: '#333', color: '#777', padding: '12px 25px', borderRadius: '4px', border: 'none', cursor: 'not-allowed' }}>Próximamente</button>
+            )
           ) : (
             <div className="season-selector" style={{ display: 'flex', gap: '8px', overflowX: 'auto' }}>
-              {serie?.temporadasDisponibles.map(t => (
+              {serie?.temporadasDisponibles?.map(t => (
                 <button key={t} onClick={() => setTemporadaSel(t.toString())} style={{ background: temporadaSel === t.toString() ? '#00a8e1' : 'rgba(255,255,255,0.1)', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer' }}>Temporada {t}</button>
               ))}
             </div>
@@ -78,7 +87,7 @@ const SeriesDetail = () => {
               return (
                 <a key={ep.id} href={localCap?.url || '#'} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
                   <div className="ep-card" style={{ position: 'relative', borderRadius: '6px', overflow: 'hidden', backgroundColor: '#1a242f' }}>
-                    <img src={`https://image.tmdb.org/t/p/w500${ep.still_path || tmdb.backdrop_path}`} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover' }} />
+                    <img src={`https://image.tmdb.org/t/p/w500${ep.still_path || tmdb.backdrop_path}`} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover' }} alt="" />
                   </div>
                   <div style={{ marginTop: '10px' }}>
                     <h3 style={{ fontSize: '0.9rem', fontWeight: 700 }}>{ep.episode_number}. {ep.name}</h3>
