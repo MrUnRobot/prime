@@ -15,16 +15,6 @@ export const mySeries = [
     }
   },
   {
-    id: "ar-ash",
-    tmdbId: "64230",
-    type: "tv",
-    temporadaDefault: "1",
-    temporadasDisponibles: [1, 2, 3],
-    capitulos: {
-      "1": [{ id: 1, titulo: "Regreso", url: "https://photos.google.com/search/ChdBZ3JlZ2Fkb3MgcmVjaWVudGVtZW50ZSIIEgYKBHICCgAo3pTP19Uz/photo/AF1QipOz_RHrWy_TmsHwQfqFgTA7__1GlTmpJWRYHhFL" }]
-    }
-  },
-  {
     id: "19995", 
     tmdbId: "19995",
     type: "movie",
