@@ -22,7 +22,7 @@ const SeriesDetail = () => {
       setIsMovie(false);
       fetch(`https://api.themoviedb.org/3/tv/${found.tmdbId}?api_key=${API_KEY}&language=es-ES`)
         .then(res => res.json())
-        .then(setTmdb(data => setTmdb(data)));
+        .then(data => setTmdb(data));
     } else {
       setIsMovie(true);
       fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=es-ES`)
@@ -43,7 +43,6 @@ const SeriesDetail = () => {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0f171e', color: 'white' }}>
-      {/* Hero Header */}
       <div className="hero-container" style={{ 
         height: '60vh', position: 'relative',
         backgroundImage: `linear-gradient(to top, #0f171e 10%, transparent 80%), linear-gradient(to right, #0f171e 25%, transparent 100%), url(https://image.tmdb.org/t/p/original${tmdb.backdrop_path})`,
@@ -79,7 +78,6 @@ const SeriesDetail = () => {
         </div>
       </div>
 
-      {/* Grid de Episodios Responsivo */}
       {!isMovie && (
         <div style={{ padding: '40px 4%' }}>
           <h2 style={{ fontSize: '1.5rem', marginBottom: '25px', fontWeight: 700 }}>Episodios</h2>
@@ -109,31 +107,14 @@ const SeriesDetail = () => {
       )}
 
       <style>{`
-        /* Desktop Default (4 columnas) */
-        .episodes-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 20px;
-        }
-        .main-title { fontSize: 3.5rem; }
-        .description { fontSize: 1.1rem; }
-
-        /* Tablets */
-        @media (max-width: 1024px) {
-          .episodes-grid { grid-template-columns: repeat(2, 1fr); }
-          .main-title { font-size: 2.5rem; }
-        }
-
-        /* Smartphone */
-        @media (max-width: 600px) {
-          .episodes-grid { grid-template-columns: 1fr; }
-          .main-title { font-size: 1.8rem; }
-          .description { font-size: 0.95rem; }
+        .episodes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .main-title { font-size: 3.5rem; }
+        @media (max-width: 1024px) { .episodes-grid { grid-template-columns: repeat(2, 1fr); } .main-title { font-size: 2.5rem; } }
+        @media (max-width: 600px) { 
+          .episodes-grid { grid-template-columns: 1fr; } 
+          .main-title { font-size: 1.8rem; } 
           .hero-container { height: 50vh; }
-          .hero-content { bottom: 20px; }
-          .ep-overview { -webkit-line-clamp: 3; }
         }
-
         .ep-card:hover .play-overlay { opacity: 1 !important; }
       `}</style>
     </div>
