@@ -13,22 +13,21 @@ const SeriesDetail = () => {
   const API_KEY = "844dba0bfd8f3a4f3799f6130ef9e335";
 
   useEffect(() => {
-    // Buscamos en la librería comparando IDs (como string para evitar fallos)
     const found = mySeries.find(s => String(s.id) === String(id) || String(s.tmdbId) === String(id));
     setSerie(found || null);
 
-    // Si no está en la librería o es tipo 'movie', lo tratamos como película
-    const isActuallyMovie = !found || found.type === "movie";
+    // Detección específica: Si es Avatar (19995) o tiene tipo movie en la librería
+    const isAvatar = id === "19995" || id === "76600";
+    const isActuallyMovie = isAvatar || (found && found.type === "movie") || (!found);
+    
     setIsMovie(isActuallyMovie);
-
     const typePath = isActuallyMovie ? 'movie' : 'tv';
     
     fetch(`https://api.themoviedb.org/3/${typePath}/${id}?api_key=${API_KEY}&language=es-ES`)
       .then(res => res.json())
       .then(data => {
         setTmdb(data);
-        // Si es serie y tiene temporada default en la librería, la usamos
-        if (found?.temporadaDefault) setTemporadaSel(found.temporadaDefault);
+        if (found?.temporadaDefault && !isActuallyMovie) setTemporadaSel(found.temporadaDefault);
       });
   }, [id]);
 
@@ -44,7 +43,6 @@ const SeriesDetail = () => {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0f171e', color: 'white', overflowX: 'hidden' }}>
-      {/* Hero Header */}
       <div className="hero-container" style={{ 
         height: '65vh', position: 'relative',
         backgroundImage: `linear-gradient(to top, #0f171e 15%, transparent 85%), linear-gradient(to right, #0f171e 20%, transparent 100%), url(https://image.tmdb.org/t/p/original${tmdb.backdrop_path})`,
@@ -53,8 +51,9 @@ const SeriesDetail = () => {
         <div className="hero-content" style={{ padding: '0 5%', position: 'absolute', bottom: '30px', width: '100%', boxSizing: 'border-box' }}>
           <h1 className="main-title" style={{ fontWeight: 900, marginBottom: '10px' }}>{tmdb.name || tmdb.title}</h1>
           <div className="metadata" style={{ display: 'flex', gap: '12px', marginBottom: '15px', fontSize: '0.85rem', color: '#8197a4' }}>
-             <span>{tmdb.vote_average?.toFixed(1)} ★</span>
+             <span style={{ color: '#46d369' }}>{tmdb.vote_average?.toFixed(1)} ★</span>
              <span>{(tmdb.first_air_date || tmdb.release_date)?.split('-')[0]}</span>
+             <span style={{ border: '1px solid #8197a4', padding: '0 5px', borderRadius: '4px' }}>18+</span>
              <span>{isMovie ? `${tmdb.runtime} min` : `${tmdb.number_of_seasons} Temporadas`}</span>
           </div>
           <p className="description" style={{ lineHeight: '1.4', color: '#ccc', marginBottom: '25px', maxWidth: '700px' }}>{tmdb.overview}</p>
@@ -68,7 +67,7 @@ const SeriesDetail = () => {
           ) : (
             <div className="season-selector" style={{ display: 'flex', gap: '8px', overflowX: 'auto' }}>
               {serie?.temporadasDisponibles?.map(t => (
-                <button key={t} onClick={() => setTemporadaSel(t.toString())} style={{ background: temporadaSel === t.toString() ? '#00a8e1' : 'rgba(255,255,255,0.1)', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer' }}>Temporada {t}</button>
+                <button key={t} onClick={() => setTemporadaSel(t.toString())} style={{ background: temporadaSel === t.toString() ? '#00a8e1' : 'rgba(255,255,255,0.1)', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold' }}>Temporada {t}</button>
               ))}
             </div>
           )}
@@ -77,17 +76,21 @@ const SeriesDetail = () => {
 
       {!isMovie && (
         <div style={{ padding: '30px 5%' }}>
-          <h2 style={{ fontSize: '1.4rem', marginBottom: '20px' }}>Episodios</h2>
+          <h2 style={{ fontSize: '1.4rem', marginBottom: '25px', fontWeight: 700 }}>Episodios</h2>
           <div className="episodes-grid">
             {temporadaData?.episodes?.map((ep, index) => {
               const localCap = serie?.capitulos[temporadaSel]?.[index];
               return (
                 <a key={ep.id} href={localCap?.url || '#'} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
                   <div className="ep-card" style={{ position: 'relative', borderRadius: '6px', overflow: 'hidden', backgroundColor: '#1a242f' }}>
-                    <img src={`https://image.tmdb.org/t/p/w500${ep.still_path || tmdb.backdrop_path}`} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover' }} alt="" />
+                    <img src={`https://image.tmdb.org/t/p/w500${ep.still_path || tmdb.backdrop_path}`} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover' }} />
                   </div>
-                  <div style={{ marginTop: '10px' }}>
-                    <h3 style={{ fontSize: '0.9rem', fontWeight: 700 }}>{ep.episode_number}. {ep.name}</h3>
+                  <div style={{ marginTop: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <h3 style={{ fontSize: '0.95rem', fontWeight: 700 }}>{ep.episode_number}. {ep.name}</h3>
+                      <span style={{ fontSize: '0.8rem', color: '#8197a4' }}>{ep.runtime} min</span>
+                    </div>
+                    <p style={{ fontSize: '0.85rem', color: '#8197a4', marginTop: '5px', display: '-webkit-box', WebkitLineClamp: '3', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{ep.overview}</p>
                   </div>
                 </a>
               );
@@ -96,10 +99,10 @@ const SeriesDetail = () => {
         </div>
       )}
       <style>{`
-        .episodes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .episodes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px 20px; }
         .main-title { font-size: 3rem; }
         @media (max-width: 1024px) { .episodes-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { .episodes-grid { grid-template-columns: 1fr; } .main-title { font-size: 1.6rem; } }
+        @media (max-width: 600px) { .episodes-grid { grid-template-columns: 1fr; } .main-title { font-size: 1.8rem; } }
       `}</style>
     </div>
   );
