@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { mySeries } from '../data/myLibrary';
 
 const SeriesDetail = () => {
@@ -13,24 +13,23 @@ const SeriesDetail = () => {
   const API_KEY = "844dba0bfd8f3a4f3799f6130ef9e335";
 
   useEffect(() => {
-    // Buscamos si el ID actual existe en nuestra librería personalizada
+    // Buscamos en la librería comparando IDs (como string para evitar fallos)
     const found = mySeries.find(s => String(s.id) === String(id) || String(s.tmdbId) === String(id));
     setSerie(found || null);
 
-    // Verificamos si es Avatar o una película genérica (no está en mySeries como TV)
-    const isTV = found && found.type === "tv";
+    // Si no está en la librería o es tipo 'movie', lo tratamos como película
+    const isActuallyMovie = !found || found.type === "movie";
+    setIsMovie(isActuallyMovie);
+
+    const typePath = isActuallyMovie ? 'movie' : 'tv';
     
-    if (isTV) {
-      setIsMovie(false);
-      fetch(`https://api.themoviedb.org/3/tv/${found.tmdbId}?api_key=${API_KEY}&language=es-ES`)
-        .then(res => res.json())
-        .then(setTmdb);
-    } else {
-      setIsMovie(true);
-      fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=es-ES`)
-        .then(res => res.json())
-        .then(setTmdb);
-    }
+    fetch(`https://api.themoviedb.org/3/${typePath}/${id}?api_key=${API_KEY}&language=es-ES`)
+      .then(res => res.json())
+      .then(data => {
+        setTmdb(data);
+        // Si es serie y tiene temporada default en la librería, la usamos
+        if (found?.temporadaDefault) setTemporadaSel(found.temporadaDefault);
+      });
   }, [id]);
 
   useEffect(() => {
@@ -43,11 +42,9 @@ const SeriesDetail = () => {
 
   if (!tmdb) return <div style={{padding: '100px', textAlign: 'center', color: 'white'}}>Cargando...</div>;
 
-  // LÓGICA CLAVE: Solo usa el link si existe en myLibrary.js para este ID específico
-  const currentMovieUrl = isMovie ? serie?.url : null;
-
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0f171e', color: 'white', overflowX: 'hidden' }}>
+      {/* Hero Header */}
       <div className="hero-container" style={{ 
         height: '65vh', position: 'relative',
         backgroundImage: `linear-gradient(to top, #0f171e 15%, transparent 85%), linear-gradient(to right, #0f171e 20%, transparent 100%), url(https://image.tmdb.org/t/p/original${tmdb.backdrop_path})`,
@@ -63,8 +60,8 @@ const SeriesDetail = () => {
           <p className="description" style={{ lineHeight: '1.4', color: '#ccc', marginBottom: '25px', maxWidth: '700px' }}>{tmdb.overview}</p>
           
           {isMovie ? (
-            currentMovieUrl ? (
-              <a href={currentMovieUrl} target="_blank" rel="noreferrer" style={{ background: '#00a8e1', color: 'white', padding: '12px 25px', borderRadius: '4px', textDecoration: 'none', fontWeight: 'bold' }}>Reproducir Película</a>
+            serie?.url ? (
+              <a href={serie.url} target="_blank" rel="noreferrer" style={{ background: '#00a8e1', color: 'white', padding: '12px 25px', borderRadius: '4px', textDecoration: 'none', fontWeight: 'bold' }}>Reproducir Película</a>
             ) : (
               <button disabled style={{ background: '#333', color: '#777', padding: '12px 25px', borderRadius: '4px', border: 'none', cursor: 'not-allowed' }}>Próximamente</button>
             )
@@ -91,7 +88,6 @@ const SeriesDetail = () => {
                   </div>
                   <div style={{ marginTop: '10px' }}>
                     <h3 style={{ fontSize: '0.9rem', fontWeight: 700 }}>{ep.episode_number}. {ep.name}</h3>
-                    <p style={{ fontSize: '0.8rem', color: '#8197a4' }}>{ep.overview}</p>
                   </div>
                 </a>
               );
@@ -103,11 +99,7 @@ const SeriesDetail = () => {
         .episodes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         .main-title { font-size: 3rem; }
         @media (max-width: 1024px) { .episodes-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { 
-          .episodes-grid { grid-template-columns: 1fr; } 
-          .main-title { font-size: 1.6rem; }
-          .hero-content { padding: 0 15px !important; }
-        }
+        @media (max-width: 600px) { .episodes-grid { grid-template-columns: 1fr; } .main-title { font-size: 1.6rem; } }
       `}</style>
     </div>
   );
