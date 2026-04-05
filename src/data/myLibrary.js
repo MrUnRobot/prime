@@ -15,8 +15,8 @@ export const mySeries = [
     }
   },
   {
-    id: "19995", 
-    tmdbId: "19995",
+    id: "83533", 
+    tmdbId: "83533",
     type: "movie",
     url: "https://photos.google.com/u/0/search/CglGYXZvcml0YXMiCBIGCgQ6AggBKLanktrVMw%3D%3D/photo/AF1QipOz_RHrWy_TmsHwQfqFgTA7__1GlTmpJWRYHhFL"
   }
